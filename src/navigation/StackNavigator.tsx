@@ -3,7 +3,7 @@ import { COLORS } from "../styles/appStyles";
 import { ListScreen } from "../screens/ListScreen";
 import DetailScreen from "../screens/DetailScreen";
 import { RootStackParamList } from "./typesNavigation";
-import { FormScreen } from "../screens/FormScreen";
+import { FormScreen } from "../screens/AddBookScreen";
 
 const Stack = createStackNavigator<RootStackParamList>();
  
