@@ -1,37 +1,43 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import { HomeScreen } from "../screens/HomeScreen";
-import { DetailScreen } from "../screens/DetailScreen";
-import { EditScreen } from "../screens/EditScreen";
+import { COLORS } from "../styles/appStyles";
+import { ListScreen } from "../screens/ListScreen";
+import DetailScreen from "../screens/DetailScreen";
 import { RootStackParamList } from "./typesNavigation";
+import { FormScreen } from "../screens/FormScreen";
 
 const Stack = createStackNavigator<RootStackParamList>();
-
-export const StackNavigator = () => {
+ 
+/**
+ * Stack Navigator containing all the app screens.
+ * Defines the navigation flow: List -> Detail -> Form
+ */
+export const StackNavigator=()=> {
   return (
     <Stack.Navigator
-      initialRouteName="Home"
+      initialRouteName="List"
       screenOptions={{
-        headerStyle: { backgroundColor: "#4F46E5" },
-        headerTintColor: "#fff",
-        headerTitleStyle: { fontWeight: "bold" },
-        headerShown: true,
+        headerStyle: { backgroundColor: COLORS.primary },
+        headerTintColor: COLORS.white,
+        headerTitleStyle: { fontWeight: 'bold' },
       }}
     >
       <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ title: "MENU PRINCIPAL" }}
+        name="List"
+        component={ListScreen}
+        options={{ title: 'Mis Libros' }}
       />
       <Stack.Screen
         name="Detail"
         component={DetailScreen}
-        options={{ title: "Detalle " }}
+        options={{ title: 'Detalle del Libro' }}
       />
       <Stack.Screen
-        name="Edit"
-        component={EditScreen}
-        options={{ title: "Editar Producto" }}
+        name="Form"
+        component={FormScreen}
+        options={({ route }) => ({
+          title: route.params?.id ? 'Editar Libro' : 'Nuevo Libro',
+        })}
       />
     </Stack.Navigator>
   );
-};
+}

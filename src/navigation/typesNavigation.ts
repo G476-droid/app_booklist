@@ -1,7 +1,10 @@
-import { Product } from "../types";
+import { StackScreenProps } from "@react-navigation/stack";
 
 export type RootStackParamList = {
-    Home: undefined
-    Detail: {product : Product}
-    Edit: {product: Product; mode: 'view' | 'edit'}
+  List: undefined;              
+  Detail: { id: number };       
+  Form: { id?: number };        
 };
+
+export type ScreenProps<T extends keyof RootStackParamList> =
+  StackScreenProps<RootStackParamList, T>;
