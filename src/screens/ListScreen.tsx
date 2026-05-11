@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { listStyles } from "../styles/appStyles";
 import { ScreenProps } from "../navigation/typesNavigation";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Book } from "../types/book";
 import {bookService } from "../services/bookService";
 import { useFocusEffect } from "@react-navigation/native";
@@ -24,16 +24,7 @@ export const ListScreen = ({ navigation }: Props) => {
   //Buscar por nombre
   const [searchText, setSearchText] = useState<string>("");
 
-  //useFocusEffect: permite ejecutar loadcCourses cada vez que la pantalla vuelve
-  //a estar isible.
-  //Así grarantizamos que siempre veamos los datos actualizados.
-  useFocusEffect(
-    useCallback(() => {
-      loadBooks();
-    }, []),
-  );
-
-  const loadBooks = async (): Promise<void> => {
+  const loadBooks = useCallback(async (): Promise<void> => {
     try {
       setLoading(true);
       const data = await bookService.getAll();
@@ -44,12 +35,21 @@ export const ListScreen = ({ navigation }: Props) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  //useFocusEffect: permite ejecutar loadcCourses cada vez que la pantalla vuelve
+  //a estar isible.
+  //Así grarantizamos que siempre veamos los datos actualizados.
+  useFocusEffect(
+    useCallback(() => {
+      loadBooks();
+    }, [loadBooks]),
+  ); 
 
   //Arreglo con datos filrados
-  const filteredBooks = books.filter((book) => 
-    book.title.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredBooks = useMemo(() => books.filter((book) => 
+    book.title.toLowerCase().includes(searchText.trim().toLowerCase())
+  ), [books, searchText]);
 
   return (
     <View style={listStyles.container}>
@@ -67,7 +67,7 @@ export const ListScreen = ({ navigation }: Props) => {
         data={filteredBooks}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={listStyles.list}
-        ListEmptyComponent={<Text style={listStyles.emptyText}>
+        ListEmptyComponent={
           <Text style={listStyles.emptyText}>
             {loading
             ? "Cargando..."
@@ -76,7 +76,7 @@ export const ListScreen = ({ navigation }: Props) => {
             : "Todavía no hay libros. Crea el primer libro!"
             }
           </Text>
-        </Text>}
+        }
         renderItem={({ item }) => (
           <TouchableOpacity
             style={listStyles.card}

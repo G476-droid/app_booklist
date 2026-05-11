@@ -19,4 +19,5 @@ const createTables = async (db: SQLite.SQLiteDatabase): Promise<void> => {
         year INTEGER NOT NULL,
         genre TEXT NOT NULL
       );`);
+  await db.execAsync("CREATE INDEX IF NOT EXISTS idx_books_title ON books(title);");
 };

@@ -57,10 +57,12 @@ export const FormScreen = ({ route, navigation }: Props) => {
   };
 
   const handleInputChange = (key: string, value: string) => {
-    setForm({ ...form, [key]: value });
+    setForm((form) => ({ ...form, [key]: value }));
   };
 
   const handleSave = async (): Promise<void> => {
+    if (saving) return;
+
     if (
       form.title.trim() === "" ||
       form.author.trim() === "" ||

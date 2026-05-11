@@ -13,13 +13,7 @@ export default function DetailScreen({ route, navigation }: Props) {
 
   const [book, setBook] = useState<Book | null>(null);
 
-  useFocusEffect(
-    useCallback(() => {
-      loadBook();
-    }, []),
-  );
-
-  const loadBook = async (): Promise<void> => {
+  const loadBook = useCallback(async (): Promise<void> => {
     try {
       const data = await bookService.getById(id);
       setBook(data);
@@ -32,7 +26,13 @@ export default function DetailScreen({ route, navigation }: Props) {
       Alert.alert("Error", "No se puede cargar el libro");
       console.error(error);
     }
-  };
+  }, [id, navigation]);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadBook();
+    }, [loadBook]),
+  );
 
   const confirmDelete = (): void => {
     if (book === null) return;
